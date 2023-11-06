@@ -15,13 +15,15 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
 
   UserDatabase database = UserDatabase();
 
+  var items = ['Select your race', 'Chinese', 'Malay', 'Indian', 'Others'];
+
   String name = '';
   String mykad = '';
   String phone = '';
   String password = '';
   String confirm = '';
   String email = '';
-  String race = '';
+  String race = 'Select your race';
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
-                      '',
+                      'assets/hotgoat.png',
                       width: 300,
                       height: 270,
                       fit: BoxFit.cover,
@@ -68,7 +70,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Enter your MyKad',
@@ -118,7 +120,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Enter your name',
@@ -165,7 +167,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Enter your phone no',
@@ -215,7 +217,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Enter your email',
@@ -264,54 +266,39 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Enter your race',
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0xFF4768FF),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.people,
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFF4768FF), width: 2), borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.person),
+                          SizedBox(width: 15),
+                          DropdownButton(
+                            value: race,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            items: items.map((String items) {
+                              return DropdownMenuItem(
+                                value: items,
+                                child: Text(items),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                race = newValue!;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please enter your race!";
-                      } else
-                        return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        race = value;
-                      });
-                    },
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                   child: TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -361,7 +348,7 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                   ),
                 ),
                 Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(8, 40, 8, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(8, 20, 8, 0),
                     child: TextFormField(
                       obscureText: true,
                       decoration: InputDecoration(
@@ -410,13 +397,13 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                       },
                     )),
                 Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          primary: Colors.blue,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.fromLTRB(150, 10, 150, 10)),
+                          fixedSize: const Size(300, 50)),
                       onPressed: () async {
                         print(_formKey.currentState!.validate());
                         if (_formKey.currentState!.validate() &&
@@ -464,7 +451,10 @@ class _RegisterPageWidgetState extends State<RegisterPageWidget> {
                           }
                         }
                       },
-                      child: const Text("Register")),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white),
+                      )),
                 ),
               ],
             ),

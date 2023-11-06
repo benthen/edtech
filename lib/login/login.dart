@@ -44,7 +44,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
-                      'assets/images/Orange_Minimalist_Travel_App_Business_Logo-removebg-preview.png',
+                      'assets/hotgoat.png',
                       width: 300,
                       height: 270,
                       fit: BoxFit.cover,
@@ -165,7 +165,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         primary: Color(0xFF4768FF),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.fromLTRB(150, 10, 150, 10)),
+                        fixedSize: const Size(300, 50)),
                     onPressed: () async {
                       if (_formKey.currentState!.validate() &&
                           id.isNotEmpty &&
@@ -178,18 +178,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                                       MainPageUiWidget(
                                           mykad: id)));
                         }
-                      } else if (await admin.adminLogin(id, password)) {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (context) =>
-                        //             AdminHomePageWidget()));
-                      } else {
+                        else {
                         showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             content: const Text(
-                                'Your MyKad/Agent ID or password is incorrect!'),
+                                'Your MyKad or password is incorrect!'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () => Navigator.pop(context, 'OK'),
@@ -199,6 +193,15 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           ),
                         );
                       }
+                      } 
+                      // else if (await admin.adminLogin(id, password)) {
+                      //   Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //           builder: (context) =>
+                      //               AdminHomePageWidget()));
+                      // } 
+                      
                     },
                     child: const Text(
                       "Login",

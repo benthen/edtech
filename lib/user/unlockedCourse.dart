@@ -1,3 +1,4 @@
+import 'package:edtech/user/courseContent.dart';
 import 'package:edtech/user/home.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,12 @@ import 'package:flutter/material.dart';
 class UnlockedCoursePage extends StatefulWidget {
   final String courseName;
   final String mykad;
+  final String coursePath;
   const UnlockedCoursePage(
-      {super.key, required this.courseName, required this.mykad});
+      {super.key,
+      required this.courseName,
+      required this.mykad,
+      required this.coursePath});
 
   @override
   State<UnlockedCoursePage> createState() => _UnlockedCoursePageState();
@@ -25,7 +30,7 @@ class _UnlockedCoursePageState extends State<UnlockedCoursePage> {
   void getPicURL() async {
     String file = await FirebaseStorage.instance
         .ref()
-        .child('logo/${widget.courseName}')
+        .child('logo/${widget.coursePath}')
         .getDownloadURL();
     setState(() {
       url = file;
@@ -65,7 +70,7 @@ class _UnlockedCoursePageState extends State<UnlockedCoursePage> {
                     "UNLOCKED SUCCESSFULLY",
                     style: TextStyle(
                         color: Colors.purple,
-                        fontSize: 30,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20),
@@ -74,21 +79,38 @@ class _UnlockedCoursePageState extends State<UnlockedCoursePage> {
                           primary: Color(0xFF4768FF),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.fromLTRB(100, 10, 100, 10)),
-                      onPressed: () {},
+                          fixedSize: const Size(300, 50)),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CourseChapter(
+                                      mykad: widget.mykad,
+                                      courseName: widget.courseName,
+                                      coursePath: widget.coursePath,
+                                      progress: 1,
+                                    )));
+                        CourseChapter(
+                          mykad: widget.mykad,
+                          courseName: widget.courseName,
+                          coursePath: widget.coursePath,
+                          progress: 1,
+                        );
+                      },
                       child: Text("Start Learning",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold))),
-
-                              SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Color(0xFF4768FF),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.fromLTRB(100, 10, 100, 10)),
+                          fixedSize: const Size(300, 50)),
                       onPressed: () {
                         Navigator.push(
                             context,

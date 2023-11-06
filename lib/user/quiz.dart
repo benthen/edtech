@@ -6,12 +6,14 @@ class QuizPage extends StatefulWidget {
   final int index;
   final int total;
   final String courseName;
+  final String coursePath;
   final String mykad;
   const QuizPage(
       {super.key,
       required this.index,
       required this.total,
       required this.courseName,
+      required this.coursePath,
       required this.mykad});
 
   @override
@@ -23,6 +25,7 @@ class _QuizPageState extends State<QuizPage> {
 
   int questionIndex = 0;
   int total = 0;
+  String quizResult = '';
 
   List<String> question = [];
   List<String> answer = [];
@@ -40,7 +43,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void getQuizDetail() async {
-    final detail = await user.getQuizDetail(widget.courseName.split('.')[0]);
+    final detail = await user.getQuizDetail(widget.courseName.toLowerCase());
     setState(() {
       question = detail['question'].split(', ');
       answer = detail['answer'].split(', ');
@@ -87,17 +90,21 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
           ),
-          Container(
-            child: Center(
-                child: question.length == 0
-                    ? CircularProgressIndicator()
-                    : Text(
-                        question[questionIndex],
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700),
-                      )),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              child: Center(
+                  child: question.length == 0
+                      ? CircularProgressIndicator()
+                      : Text(
+                          question[questionIndex],
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700),
+                        )),
+            ),
           ),
           SizedBox(height: 10),
           for (int i = 0; i < option[questionIndex].length; i++) ...[
@@ -108,7 +115,7 @@ class _QuizPageState extends State<QuizPage> {
                         primary: Color(0xFF4768FF),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.fromLTRB(100, 10, 100, 10)),
+                        fixedSize: const Size(300, 50)),
                     onPressed: () async {
                       if (questionIndex + 1 < question.length) {
                         if ((option[questionIndex][i] ==
@@ -120,6 +127,7 @@ class _QuizPageState extends State<QuizPage> {
                                       index: questionIndex + 1,
                                       total: total + 1,
                                       courseName: widget.courseName,
+                                      coursePath: widget.coursePath,
                                       mykad: widget.mykad)));
                         } else
                           Navigator.push(
@@ -129,37 +137,61 @@ class _QuizPageState extends State<QuizPage> {
                                         index: questionIndex + 1,
                                         total: total,
                                         courseName: widget.courseName,
+                                        coursePath: widget.coursePath,
                                         mykad: widget.mykad,
                                       )));
                       } else {
                         if ((option[questionIndex][i] ==
                             answer[questionIndex])) {
                           total++;
-                          print("1");
-                          if(total >= question.length.ceil()){
-                            await user.finishCourse(widget.mykad, widget.courseName);
-                          }
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ResultPage(
-                                      result: total,
-                                      length: question.length,
-                                      courseName: widget.courseName,
-                                      mykad: widget.mykad)));
-                        } else {
-                          print("2");
-                          if(total >= question.length.ceil()){
-                            await user.finishCourse(widget.mykad, widget.courseName);
-                          }
+                          if (total >= (question.length / 2).ceil()) {
+                            await user.finishCourse(
+                                widget.mykad, widget.coursePath);
+                            setState(() {
+                              quizResult = 'PASSED';
+                            });
+                            await user.awardPoint(widget.mykad);
+                          } else
+                            setState(() {
+                              quizResult = 'FAILED';
+                            });
+                          await user.updateQuizResult(widget.mykad,
+                              widget.courseName.toLowerCase(), quizResult);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ResultPage(
                                         result: total,
                                         length: question.length,
+                                        coursePath: widget.coursePath,
                                         courseName: widget.courseName,
                                         mykad: widget.mykad,
+                                        quizResult: quizResult,
+                                      )));
+                        } else {
+                          if (total >= (question.length / 2).ceil()) {
+                            await user.finishCourse(
+                                widget.mykad, widget.coursePath);
+                            setState(() {
+                              quizResult = 'PASSED';
+                            });
+                            await user.awardPoint(widget.mykad);
+                          } else
+                            setState(() {
+                              quizResult = 'FAILED';
+                            });
+                          await user.updateQuizResult(widget.mykad,
+                              widget.courseName.toLowerCase(), quizResult);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ResultPage(
+                                        result: total,
+                                        length: question.length,
+                                        coursePath: widget.coursePath,
+                                        courseName: widget.courseName,
+                                        mykad: widget.mykad,
+                                        quizResult: quizResult,
                                       )));
                         }
                       }
