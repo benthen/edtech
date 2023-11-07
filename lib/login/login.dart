@@ -1,7 +1,8 @@
+import 'package:edtech/admin/adminHome.dart';
 import 'package:edtech/database/adminDatabase.dart';
 import 'package:edtech/database/userDatabase.dart';
 import 'package:edtech/login/register.dart';
-import 'package:edtech/user/home.dart';
+import 'package:edtech/user/userHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -175,33 +176,28 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      MainPageUiWidget(
-                                          mykad: id)));
+                                      UserHomePage(mykad: id)));
+                        } else if (await admin.adminLogin(id, password)) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdminHomePage()));
+                        } else {
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              content: const Text(
+                                  'Your MyKad or password is incorrect!'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
                         }
-                        else {
-                        showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            content: const Text(
-                                'Your MyKad or password is incorrect!'),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
                       }
-                      } 
-                      // else if (await admin.adminLogin(id, password)) {
-                      //   Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //           builder: (context) =>
-                      //               AdminHomePageWidget()));
-                      // } 
-                      
                     },
                     child: const Text(
                       "Login",

@@ -1,3 +1,4 @@
+import 'package:edtech/database/adminDatabase.dart';
 import 'package:edtech/database/userDatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -19,6 +20,7 @@ class _EduPointPageState extends State<EduPointPage> {
   List<Map> files = [];
 
   UserDatabase user = UserDatabase();
+  AdminDatabase admin = AdminDatabase();
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _EduPointPageState extends State<EduPointPage> {
   }
 
   void getBagdeFile(detail) async {
-    final file = await user.getAllCourseImage();
+    final file = await admin.getAllCourseImage();
     setState(() {
       files = file;
       List<String> badgeMap = detail['course_finish'].split(', ');

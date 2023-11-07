@@ -1,3 +1,4 @@
+import 'package:edtech/database/adminDatabase.dart';
 import 'package:edtech/database/userDatabase.dart';
 import 'package:edtech/user/courseContent.dart';
 import 'package:edtech/user/courseDetail.dart';
@@ -6,16 +7,17 @@ import 'package:edtech/user/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-class MainPageUiWidget extends StatefulWidget {
+class UserHomePage extends StatefulWidget {
   final String mykad;
-  const MainPageUiWidget({super.key, required this.mykad});
+  const UserHomePage({super.key, required this.mykad});
 
   @override
-  _MainPageUiWidgetState createState() => _MainPageUiWidgetState();
+  _UserHomePageState createState() => _UserHomePageState();
 }
 
-class _MainPageUiWidgetState extends State<MainPageUiWidget> {
+class _UserHomePageState extends State<UserHomePage> {
   UserDatabase user = UserDatabase();
+  AdminDatabase admin = AdminDatabase();
 
   Map<String, dynamic> userDetail = {};
   List<Map> courseTaken = [];
@@ -43,7 +45,7 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
   }
 
   void getCourseTakenFile(detail) async {
-    final file = await user.getAllCourseImage();
+    final file = await admin.getAllCourseImage();
     setState(() {
       var courseTakenFiles = file;
       List<String> courseTakenMap = detail['course_taken'].split(', ');
@@ -61,7 +63,7 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
           }
         }
       }
-      
+
       for (int i = 0; i < courseTakenFiles.length; i++) {
         remainingCourse.add({
           'url': courseTakenFiles[i]['url'].toString(),
@@ -72,7 +74,6 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
         for (int j = 0; j < remainingCourse.length; j++) {
           if (basename(remainingCourse[j]['path']).split('.')[0] ==
               courseFinish[i].split('.')[0]) {
-            
             remainingCourse.removeAt(j);
             break;
           }
@@ -80,7 +81,7 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
       }
       firstReady = false;
     });
-    
+    print(file);
     getAllCourseDetail(courseTaken, remainingCourse);
   }
 
@@ -88,12 +89,13 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
     List<Map> dummy1 = [];
     List<Map> dummy2 = [];
     for (int i = 0; i < taking.length; i++) {
-      var data = await user.getAllCourseDetail(taking[i]['path'].split('.')[0]);
+      var data =
+          await admin.getAllCourseDetail(taking[i]['path'].split('.')[0]);
       dummy1.add({'name': data['name'], 'description': data['description']});
     }
     for (int i = 0; i < remaining.length; i++) {
       var data =
-          await user.getAllCourseDetail(remaining[i]['path'].split('.')[0]);
+          await admin.getAllCourseDetail(remaining[i]['path'].split('.')[0]);
       dummy2.add({'name': data['name'], 'description': data['description']});
     }
     setState(() {
@@ -175,7 +177,7 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
                               color: Colors.green,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
-                          height: ((courseTaken.length + 1)/2).ceil() * 400,
+                          height: ((courseTaken.length + 1) / 2).ceil() * 400,
                           width: MediaQuery.of(context).size.width,
                           child: courseTaken.isEmpty &&
                                   courseTakenDetail.isEmpty
@@ -206,19 +208,19 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CourseChapter(
-                                                            mykad:
-                                                               widget.mykad,
-                                                            courseName:
-                                                                courseTakenDetail[
+                                                    builder: (context) => CourseChapter(
+                                                        mykad: widget.mykad,
+                                                        courseName:
+                                                            courseTakenDetail[
+                                                                index]['name'],
+                                                        coursePath:
+                                                            courseTaken[index]
+                                                                ['path'],
+                                                        progress: userDetail[
+                                                            courseTakenDetail[
                                                                         index]
-                                                                    ['name'],
-                                                            coursePath:
-                                                                courseTaken[
-                                                                        index]
-                                                                    ['path'],
-                                                            progress: userDetail[courseTakenDetail[index]['name'].toLowerCase()])));
+                                                                    ['name']
+                                                                .toLowerCase()])));
                                           },
                                           child: (remainingCourseDetail
                                                       .isEmpty ||
@@ -267,21 +269,34 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
                                                               fontSize: 30),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text(
-                                                            courseTakenDetail[
-                                                                    index]
-                                                                ['description'],
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            textAlign:
-                                                                TextAlign.left),
-                                                      ),
+                                                      Container(
+                                                        height: 100,
+                                                        child: SingleChildScrollView(
+                                                          scrollDirection: Axis.vertical,
+                                                          child: Column(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(8.0),
+                                                                child: Text(
+                                                                    courseTakenDetail[
+                                                                            index]
+                                                                        [
+                                                                        'description'],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
                                                 ),
@@ -375,18 +390,34 @@ class _MainPageUiWidgetState extends State<MainPageUiWidget> {
                                                         fontSize: 30),
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                      remainingCourseDetail[
-                                                          index]['description'],
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                      textAlign:
-                                                          TextAlign.left),
-                                                ),
+                                                Container(
+                                                        height: 100,
+                                                        child: SingleChildScrollView(
+                                                          scrollDirection: Axis.vertical,
+                                                          child: Column(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(8.0),
+                                                                child: Text(
+                                                                    remainingCourseDetail[
+                                                                            index]
+                                                                        [
+                                                                        'description'],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
                                               ],
                                             ),
                                           ),

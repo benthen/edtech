@@ -60,24 +60,6 @@ class UserDatabase {
     }
   }
 
-  Future<List<Map>> getAllCourseImage() async {
-    List<Map> files = [];
-
-    final ListResult result =
-        await FirebaseStorage.instance.ref().child('logo').list();
-    final List<Reference> allFiles = result.items;
-
-    await Future.forEach<Reference>(allFiles, (file) async {
-      final String fileUrl = await file.getDownloadURL();
-      final String fileType = file.name.split('.').last.toLowerCase();
-      if (fileType == 'jpg' || fileType == 'jpeg' || fileType == 'png') {
-        files.add({"url": fileUrl, "path": file.fullPath});
-      }
-    });
-
-    return files;
-  }
-
   Future<Map<String, dynamic>> getQuizDetail(course) async {
     try {
       final DocumentReference documentReference =
@@ -121,20 +103,6 @@ class UserDatabase {
             .update({"course_finish": course, "course_taken": taken});
       }
     } catch (e) {}
-  }
-
-  Future<Map<String, dynamic>> getAllCourseDetail(courseName) async {
-    try {
-      final DocumentReference documentReference =
-          FirebaseFirestore.instance.collection(courseName).doc(courseName);
-
-      final DocumentSnapshot documentSnapshot = await documentReference.get();
-      Map<String, dynamic> data =
-          documentSnapshot.data()! as Map<String, dynamic>;
-      return data;
-    } catch (e) {
-      return {};
-    }
   }
 
   Future<Map<String, dynamic>> getCourseContent(courseName) async {

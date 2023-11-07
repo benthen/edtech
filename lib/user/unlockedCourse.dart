@@ -1,5 +1,5 @@
 import 'package:edtech/user/courseContent.dart';
-import 'package:edtech/user/home.dart';
+import 'package:edtech/user/userHome.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -116,7 +116,7 @@ class _UnlockedCoursePageState extends State<UnlockedCoursePage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    MainPageUiWidget(mykad: widget.mykad)));
+                                    UserHomePage(mykad: widget.mykad)));
                       },
                       child: Text(
                         "Back to Home",

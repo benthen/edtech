@@ -1,4 +1,4 @@
-import 'package:edtech/user/home.dart';
+import 'package:edtech/user/userHome.dart';
 import 'package:edtech/user/quiz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -183,7 +183,7 @@ class _ResultPageState extends State<ResultPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            MainPageUiWidget(mykad: widget.mykad)));
+                            UserHomePage(mykad: widget.mykad)));
               },
               child: Text(
                 "Back to home",
