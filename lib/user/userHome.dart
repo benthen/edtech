@@ -28,6 +28,7 @@ class _UserHomePageState extends State<UserHomePage> {
 
   bool firstReady = true;
   bool secondReady = true;
+  bool noCourse = true;
   int currentPageIndex = 1;
 
   @override
@@ -79,9 +80,7 @@ class _UserHomePageState extends State<UserHomePage> {
           }
         }
       }
-      firstReady = false;
     });
-    print(file);
     getAllCourseDetail(courseTaken, remainingCourse);
   }
 
@@ -101,7 +100,11 @@ class _UserHomePageState extends State<UserHomePage> {
     setState(() {
       courseTakenDetail = dummy1;
       remainingCourseDetail = dummy2;
-      secondReady = false;
+      if (courseTakenDetail.isEmpty) {
+        noCourse = false;
+      }
+      firstReady = false;
+        secondReady = false;
     });
   }
 
@@ -140,19 +143,20 @@ class _UserHomePageState extends State<UserHomePage> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 170,
-                decoration: BoxDecoration(color: Colors.blue),
+                decoration: const BoxDecoration(color: Colors.blue),
                 child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 60, 0, 0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(10, 60, 0, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Welcome",
                         style: TextStyle(color: Colors.white, fontSize: 30),
                       ),
                       Text(
                         "${userDetail['name']}",
-                        style: TextStyle(color: Colors.white, fontSize: 30),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 30),
                       ),
                     ],
                   ),
@@ -162,18 +166,17 @@ class _UserHomePageState extends State<UserHomePage> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(20, 5, 0, 0),
+                    const Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(20, 5, 0, 0),
                       child: Text(
                         "Currently taking courses",
                         style: TextStyle(color: Colors.grey, fontSize: 25),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 5),
+                      padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 5, 5),
                       child: Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               color: Colors.green,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
@@ -181,15 +184,17 @@ class _UserHomePageState extends State<UserHomePage> {
                           width: MediaQuery.of(context).size.width,
                           child: courseTaken.isEmpty &&
                                   courseTakenDetail.isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Text(
-                                      "You are not taking any course now",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500)),
-                                )
+                              ? noCourse
+                                  ? const CircularProgressIndicator()
+                                  : const Padding(
+                                      padding: EdgeInsets.all(15.0),
+                                      child: Text(
+                                          "You are not taking any course now",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500)),
+                                    )
                               : Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       10, 0, 10, 20),
@@ -271,14 +276,17 @@ class _UserHomePageState extends State<UserHomePage> {
                                                       ),
                                                       Container(
                                                         height: 100,
-                                                        child: SingleChildScrollView(
-                                                          scrollDirection: Axis.vertical,
+                                                        child:
+                                                            SingleChildScrollView(
+                                                          scrollDirection:
+                                                              Axis.vertical,
                                                           child: Column(
                                                             children: [
                                                               Padding(
                                                                 padding:
                                                                     const EdgeInsets
-                                                                        .all(8.0),
+                                                                        .all(
+                                                                        8.0),
                                                                 child: Text(
                                                                     courseTakenDetail[
                                                                             index]
@@ -391,33 +399,32 @@ class _UserHomePageState extends State<UserHomePage> {
                                                   ),
                                                 ),
                                                 Container(
-                                                        height: 100,
-                                                        child: SingleChildScrollView(
-                                                          scrollDirection: Axis.vertical,
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(8.0),
-                                                                child: Text(
-                                                                    remainingCourseDetail[
-                                                                            index]
-                                                                        [
-                                                                        'description'],
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .left),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
+                                                  height: 100,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text(
+                                                              remainingCourseDetail[
+                                                                      index][
+                                                                  'description'],
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
